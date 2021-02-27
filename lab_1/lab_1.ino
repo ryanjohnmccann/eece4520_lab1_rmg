@@ -6,7 +6,7 @@
 */
 
 // GLOBAL VARIABLES
-int yellow_pin = 3;
+int yellow_pin = 4;
 int green_pin = 5;
 int red_pin = 6;
 int button_pin = 10;
