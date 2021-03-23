@@ -14,7 +14,7 @@ import serial
 # Note the serial port dev file name
 # need to change based on the particular host machine
 # TODO uncomment the following two lines to initialize serial port
-serialDevFile = 'COM5'
+serialDevFile = '/dev/cu.usbmodem143101'
 ser=serial.Serial(serialDevFile, 9600, timeout=0)
 
 delay = 0.1
@@ -125,6 +125,8 @@ while True:
         head.direction = "left"
     elif move1 == 'd':
         head.direction = "right"
+
+    
     
     # Check for a collision with the border
     if head.xcor()>290 or head.xcor()<-290 or head.ycor()>290 or head.ycor()<-290:
