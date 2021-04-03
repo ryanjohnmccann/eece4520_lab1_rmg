@@ -47,7 +47,7 @@ void checkSettings() {
     case MPU6050_CLOCK_INTERNAL_8MHZ:  Serial.println("Internal 8MHz oscillator"); break;
   }
   
-  Serial.print(" * Gyroscope:         ");
+//  Serial.print(" * Gyroscope:         ");
   switch(mpu.getScale())
   {
     case MPU6050_SCALE_2000DPS:        Serial.println("2000 dps"); break;
