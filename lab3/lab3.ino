@@ -102,7 +102,7 @@ void beg_minute() {
   Serial.print("Here");
   Serial.println();
   // Turn fan on with current speed
-  speed(speed1);
+  speed(maxspeed);
   // Speed function seems to have a 2 second delay, delay here is only 28 seconds then
   delay(28000);
   // Turn fan off
