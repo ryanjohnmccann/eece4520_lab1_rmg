@@ -14,7 +14,7 @@ volatile bool state = LOW; // starts direction of CC
 int i = 0; // used to move within speed1 to change speed
 
 //Pins for LCD displacy
-const int rs = 7, en = 8, d4 = 9, d5 = 10, d6 =11, d7 = 12;
+const int rs = 7, en = 8, d4 = 9, d5 = 10, d6 = 11, d7 = 12;
 LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
 
 //used with timer1 to update LCD
@@ -74,13 +74,32 @@ void setupTimer4(){
 //button interupte to set state to change direction
 //runs on timer0
 void rotate(){
+  double dis;
   state = !state;
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Speed:");
+  lcd.setCursor(7,0);
+  lcd.setCursor(14,0);
+  if(state == LOW){
+    lcd.print("CC");
+  }
+  if(state == HIGH){
+    lcd.print("C ");
+  }
+  lcd.setCursor(0,1);
+  lcd.print(hour());
+  lcd.print(":");
+  lcd.print(minute());
+  lcd.print(":");
+  lcd.print(second());
 }
 
 //interupt to update desplay every 1 sec
 //runs on timer1
 ISR(TIMER1_OVF_vect){
   update_lcd =true;
+  //display();
 }
 
 //interupt to update speed
@@ -91,6 +110,7 @@ ISR(TIMER4_OVF_vect){
 
 //displays speed
 void display(double dis){
+  lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Speed:");
   lcd.setCursor(7,0);
@@ -114,30 +134,42 @@ void display(double dis){
 }
 
 
-// Run fan for 30 seconds, we have reached a new minute
-void beg_minute(int sp) {
-  analogWrite(ENABLE,speed1[sp]); //changes speed of motor uses timer3 since on pin3
-  delay(30000);
-}
-
-
-//main loop toggles between slowing down and speeding up
-void loop() {
-   int temp_minute = minute();
-   //updates LCD when it s true every 1sec
+void handle_display(bool bminute=false) {
+  //updates LCD when it s true every 1sec
    if(update_lcd == true){
     update_lcd = false;
     display(speed1[i]);
    }
    //changes speed every time it reaches timeperiod value set
    //counter in incrimented every 1 sec with timer4
-   if(counter >= TIMEPERIOD){
+   if (bminute) {
+      i = 3;
+   }
+   else if(counter >= TIMEPERIOD){
      i = i+1;
      if(i == 4){
        i = 0;
      }
      counter = 0;
    }
+}
+
+
+// Run fan for 30 seconds, we have reached a new minute
+void beg_minute() {
+  analogWrite(ENABLE,speed1[3]);
+  int k = 0;
+  for (k = 0; k < 30; k++) {
+    handle_display(true);
+    delay(1000);
+  }
+}
+
+
+//main loop toggles between slowing down and speeding up
+void loop() {
+   int temp_minute = minute();
+   handle_display();
   // Minute not declared yet
   if (curr_minute == -1) {
     curr_minute = temp_minute;
@@ -146,7 +178,7 @@ void loop() {
     // We have reached a new minute, turn the fan on for 30 seconds
     if (temp_minute != curr_minute) {
       curr_minute = temp_minute;
-      beg_minute(i);
+      beg_minute();
     }
    }
    
