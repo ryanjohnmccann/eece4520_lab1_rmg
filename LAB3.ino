@@ -129,7 +129,6 @@ void beg_minute() {
   int k = 0;
   for (k = 0; k < 30; k++) {
     handle_display(true);
-    delay(1000);
   }
 }
 
